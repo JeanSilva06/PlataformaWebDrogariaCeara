@@ -12,6 +12,6 @@ public class FuncionarioRequestDTO {
     public String getNomeCompleto() { return nomeCompleto; }
     public String getCpf() { return cpf; }
     public String getEmail() { return email; }
-    public String getSenha() { return senha; } // Senha ainda pode ser enviada
+    public String getSenha() { return senha; }
     public String getCargo() { return cargo; }
 }
