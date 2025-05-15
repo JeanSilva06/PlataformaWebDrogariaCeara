@@ -1,8 +1,6 @@
 package com.drogaria.ceara.model;
 
 import jakarta.persistence.*;
-// import java.util.ArrayList;
-// import java.util.List;
 
 @Entity
 @Table(name = "funcionarios")
@@ -17,9 +15,6 @@ public class Funcionario {
     private String email;
     private String senha;
     private String cargo;
-
-    // @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Ponto> pontos = new ArrayList<>();
 
     // Construtor vazio
     public Funcionario() {}
@@ -52,10 +47,4 @@ public class Funcionario {
     public String getCargo() { return cargo; }
     public void setCargo(String cargo) { this.cargo = cargo; }
 
-    // public List<Ponto> getPontos() { return pontos; }
-    // public void setPontos(List<Ponto> pontos) { this.pontos = pontos; }
-
-    // public void addPonto(Ponto ponto) {
-    //     pontos.add(ponto);
-    // }
 }
