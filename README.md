@@ -9,5 +9,7 @@ YURI TEIXEIRA DA SILVA - 2412862
 
 ## Tecnologias utilizadas no desenvolvimento:
 :leaves: Springboot
+
 :b: Bootstrap
+
 :leaves: Thymeleaf
