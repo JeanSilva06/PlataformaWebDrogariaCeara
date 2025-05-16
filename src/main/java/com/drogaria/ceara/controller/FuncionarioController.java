@@ -3,10 +3,14 @@ package com.drogaria.ceara.controller;
 import com.drogaria.ceara.dto.FuncionarioRequestDTO;
 import com.drogaria.ceara.dto.FuncionarioResponseDTO;
 import com.drogaria.ceara.service.FuncionarioService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/funcionarios")
 public class FuncionarioController {
@@ -17,7 +21,7 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public FuncionarioResponseDTO cadastrarFuncionario(@RequestBody FuncionarioRequestDTO requestDTO) {
+    public FuncionarioResponseDTO cadastrarFuncionario(@Valid @RequestBody FuncionarioRequestDTO requestDTO) {
         return funcionarioService.cadastrarFuncionario(requestDTO);
     }
 
