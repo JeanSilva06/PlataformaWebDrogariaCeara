@@ -74,6 +74,12 @@
     		<artifactId>hibernate-validator</artifactId>
     		<version>8.0.0.Final</version>
 		</dependency>
+
+	<!-- Thymeleaf (para front-end) -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
