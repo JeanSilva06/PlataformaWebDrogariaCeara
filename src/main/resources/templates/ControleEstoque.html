@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Estoque - Drogaria Ceará</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 70px;
+    }
+    .container {
+      max-width: 1000px;
+    }
+  </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="index.html">
+      <strong>Drogaria Ceará - Admin</strong>
+    </a>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Estoque de Produtos</h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Categoria</th>
+        <th>Validade</th>
+        <th>Quantidade</th>
+        <th>Preço (R$)</th>
+      </tr>
+      </thead>
+      <tbody id="tabela-produtos">
+      <!-- Produtos serão inseridos aqui via JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function carregarEstoque() {
+    axios.get("http://localhost:8080/produtos")
+            .then(response => {
+              const produtos = response.data;
+              const tabela = document.getElementById('tabela-produtos');
+              tabela.innerHTML = "";
+
+              produtos.forEach(p => {
+                tabela.innerHTML += `
+              <tr>
+                <td>${p.id}</td>
+                <td>${p.nome}</td>
+                <td>${p.categoria}</td>
+                <td>${p.validade}</td>
+                <td>${p.quantidade}</td>
+                <td>R$ ${p.preco.toFixed(2)}</td>
+              </tr>
+            `;
+              });
+            })
+            .catch(error => {
+              console.error("Erro ao carregar estoque:", error);
+              alert("Erro ao carregar estoque. Verifique se o backend está rodando.");
+            });
+  }
+
+  document.addEventListener("DOMContentLoaded", carregarEstoque);
+</script>
+</body>
+</html>
