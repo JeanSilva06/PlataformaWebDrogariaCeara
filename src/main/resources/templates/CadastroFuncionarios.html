@@ -26,7 +26,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+            <a class="navbar-brand d-flex align-items-center" href="MainPage.html">
 
                 <strong>Drogaria Ceará - Admin</strong>
             </a>
@@ -58,7 +58,7 @@
             </div>
             <button type="submit" class="btn btn-outline-success w-100">Cadastrar</button>
             <p class="text-center mt-3">
-                Já tem conta? <a href="login.html">Faça login</a>
+                Já tem conta? <a href="LoginUsuario.html">Faça login</a>
             </p>
         </form>
     </div>
@@ -75,17 +75,10 @@
                 cargo: document.getElementById("cargo").value
             };
 
-            fetch("http://localhost:8080/funcionarios", { // Endpoint do Spring Boot
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(funcionario)
-            })
-                .then(response => response.json())
-                .then(data => {
+            axios.post("http://localhost:8080/funcionarios", funcionario)
+                .then(response => {
                     alert("Funcionário cadastrado com sucesso!");
-                    console.log("Resposta do servidor:", data);
+                    console.log("Resposta do servidor:", response.data);
                     document.getElementById("cadastroForm").reset(); // Limpa o formulário
                 })
                 .catch(error => {
@@ -94,6 +87,7 @@
                 });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 
 </html>
