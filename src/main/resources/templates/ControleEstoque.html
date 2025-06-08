@@ -15,11 +15,12 @@
     }
   </style>
 </head>
-<body>
+<body onload="verificarAutenticacao()"> <!-- Verificação de autenticação ao carregar a página -->
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="index.html">
+    <a class="navbar-brand d-flex align-items-center" href="MainPage.html">
       <strong>Drogaria Ceará - Admin</strong>
     </a>
   </div>
@@ -48,33 +49,45 @@
 </div>
 
 <script>
-  function carregarEstoque() {
-    axios.get("http://localhost:8080/produtos")
-            .then(response => {
-              const produtos = response.data;
-              const tabela = document.getElementById('tabela-produtos');
-              tabela.innerHTML = "";
-
-              produtos.forEach(p => {
-                tabela.innerHTML += `
-              <tr>
-                <td>${p.id}</td>
-                <td>${p.nome}</td>
-                <td>${p.categoria}</td>
-                <td>${p.validade}</td>
-                <td>${p.quantidade}</td>
-                <td>R$ ${p.preco.toFixed(2)}</td>
-              </tr>
-            `;
-              });
-            })
-            .catch(error => {
-              console.error("Erro ao carregar estoque:", error);
-              alert("Erro ao carregar estoque. Verifique se o backend está rodando.");
-            });
+  // Verifica se o usuário está autenticado antes de carregar a página
+  function verificarAutenticacao() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Acesso negado! Faça login para continuar.");
+      window.location.href = "LoginUsuario.html"; // Redireciona para login
+    } else {
+      carregarEstoque(); // Se autenticado, carrega os produtos
+    }
   }
 
-  document.addEventListener("DOMContentLoaded", carregarEstoque);
+  function carregarEstoque() {
+    const token = localStorage.getItem("token");
+    axios.get("http://localhost:8080/produtos", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => {
+      const produtos = response.data;
+      const tabela = document.getElementById('tabela-produtos');
+      tabela.innerHTML = "";
+
+      produtos.forEach(p => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.nome}</td>
+            <td>${p.categoria}</td>
+            <td>${p.validade}</td>
+            <td>${p.quantidade}</td>
+            <td>R$ ${p.preco.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    })
+    .catch(error => {
+      console.error("Erro ao carregar estoque:", error);
+      alert("Erro ao carregar estoque. Verifique se o backend está rodando.");
+    });
+  }
 </script>
 </body>
 </html>

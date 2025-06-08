@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Registro de Ponto - Drogaria Ceará</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     body {
       background-color: #f8f9fa;
@@ -20,10 +21,11 @@
     }
   </style>
 </head>
-<body>
+<body onload="verificarAutenticacao()"> <!-- Verificação de autenticação ao carregar a página -->
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="index.html">
+    <a class="navbar-brand d-flex align-items-center" href="MainPage.html">
       <strong>Drogaria Ceará - Admin</strong>
     </a>
   </div>
@@ -46,25 +48,44 @@
 </div>
 
 <script>
-  // Carrega os funcionários na inicialização da página
-  fetch("http://localhost:8080/funcionarios")
-          .then(response => response.json())
-          .then(funcionarios => {
-            const select = document.getElementById("funcionarioSelect");
-            select.innerHTML = ""; // Limpa as opções antigas
-            funcionarios.forEach(func => {
-              const option = document.createElement("option");
-              option.value = func.id;
-              option.textContent = func.nomeCompleto + " (" + func.cargo + ")";
-              select.appendChild(option);
-            });
-          })
-          .catch(err => {
-            console.error("Erro ao carregar funcionários:", err);
-            document.getElementById("funcionarioSelect").innerHTML = "<option disabled>Erro ao carregar</option>";
-          });
+  function verificarAutenticacao() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Acesso negado! Faça login para continuar.");
+      window.location.href = "LoginUsuario.html"; // Redireciona para login
+    } else {
+      carregarFuncionarios(); // Se autenticado, carrega funcionários
+    }
+  }
+
+  function carregarFuncionarios() {
+    const token = localStorage.getItem("token");
+    axios.get("http://localhost:8080/funcionarios", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => {
+      const select = document.getElementById("funcionarioSelect");
+      select.innerHTML = "";
+      response.data.forEach(func => {
+        const option = document.createElement("option");
+        option.value = func.id;
+        option.textContent = func.nomeCompleto + " (" + func.cargo + ")";
+        select.appendChild(option);
+      });
+    })
+    .catch(err => {
+      console.error("Erro ao carregar funcionários:", err);
+      document.getElementById("funcionarioSelect").innerHTML = "<option disabled>Erro ao carregar</option>";
+    });
+  }
 
   function registrarPonto(tipo) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Usuário não autenticado! Faça login novamente.");
+      return;
+    }
+
     const funcionarioId = document.getElementById("funcionarioSelect").value;
     if (!funcionarioId) {
       alert("Selecione um funcionário.");
@@ -76,24 +97,16 @@
       tipo: tipo
     };
 
-    fetch("http://localhost:8080/ponto", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+    axios.post("http://localhost:8080/ponto", payload, {
+      headers: { Authorization: `Bearer ${token}` }
     })
-            .then(res => {
-              if (res.ok) {
-                alert(`${tipo} registrada com sucesso!`);
-              } else {
-                alert("Erro ao registrar ponto.");
-              }
-            })
-            .catch(error => {
-              console.error("Erro:", error);
-              alert("Erro ao registrar ponto.");
-            });
+    .then(res => {
+      alert(`${tipo} registrada com sucesso!`);
+    })
+    .catch(error => {
+      console.error("Erro ao registrar ponto:", error);
+      alert("Erro ao registrar ponto. Verifique se o backend está rodando.");
+    });
   }
 
   document.getElementById("entradaBtn").addEventListener("click", () => registrarPonto("ENTRADA"));
