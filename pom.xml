@@ -54,12 +54,12 @@
         	<artifactId>spring-boot-starter-data-jpa</artifactId>
     	</dependency>
 
-    <!-- Banco de dados H2 (para testes) -->
-    	<dependency>
-        	<groupId>com.h2database</groupId>
-        	<artifactId>h2</artifactId>
-        	<scope>runtime</scope>
-    	</dependency>
+	<!-- Banco de dados MySQL (para uso real) -->
+		<dependency>
+    		<groupId>mysql</groupId>
+    		<artifactId>mysql-connector-java</artifactId>
+    		<version>8.0.33</version>
+		</dependency>
 
 	<!-- Swagger (para testes) -->
 		<dependency>
