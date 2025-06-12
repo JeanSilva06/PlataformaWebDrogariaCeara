@@ -8,8 +8,14 @@ JEAN MATHEUS DE SOUSA SILVA - 2412817
 YURI TEIXEIRA DA SILVA - 2412862
 
 ## Tecnologias utilizadas no desenvolvimento:
-:leaves: Springboot
+Java
 
-:b: Bootstrap
+Springboot
 
-:leaves: Thymeleaf
+Bootstrap
+
+Axios
+
+MySQL
+
+Swagger
