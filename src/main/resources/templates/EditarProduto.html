@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Produto - Drogaria Ceará</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px;
+        }
+        .container {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body onload="verificarAutenticacao()">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="MainPage.html">
+            <strong>Drogaria Ceará - Admin</strong>
+        </a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Editar Produto</h2>
+    <form id="form-editar-produto">
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" required>
+        </div>
+        <div class="mb-3">
+            <label for="categoria" class="form-label">Categoria</label>
+            <input type="text" class="form-control" id="categoria" required>
+        </div>
+        <div class="mb-3">
+            <label for="validade" class="form-label">Validade</label>
+            <input type="date" class="form-control" id="validade" required>
+        </div>
+        <div class="mb-3">
+            <label for="quantidade" class="form-label">Quantidade</label>
+            <input type="number" class="form-control" id="quantidade" required>
+        </div>
+        <div class="mb-3">
+            <label for="preco" class="form-label">Preço (R$)</label>
+            <input type="number" step="0.01" class="form-control" id="preco" required>
+        </div>
+        <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        <a href="ControleEstoque.html" class="btn btn-secondary ms-2">Cancelar</a>
+
+    </form>
+</div>
+
+<script>
+    let idProduto;
+
+    function verificarAutenticacao() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Acesso negado! Faça login.");
+            window.location.href = "LoginUsuario.html";
+        } else {
+            carregarProduto();
+        }
+    }
+
+    function carregarProduto() {
+        const params = new URLSearchParams(window.location.search);
+        idProduto = params.get("id");
+        if (!idProduto) {
+            alert("Produto não especificado.");
+            window.location.href = "ControleEstoque.html";
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        axios.get(`http://localhost:8080/produtos/${idProduto}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(response => {
+                const p = response.data;
+                document.getElementById("nome").value = p.nome;
+                document.getElementById("categoria").value = p.categoria;
+                document.getElementById("validade").value = p.validade;
+                document.getElementById("quantidade").value = p.quantidade;
+                document.getElementById("preco").value = p.preco;
+            })
+            .catch(error => {
+                console.error("Erro ao buscar produto:", error);
+                alert("Erro ao buscar produto.");
+                window.location.href = "ControleEstoque.html";
+            });
+    }
+
+    document.getElementById("form-editar-produto").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+
+        const produtoAtualizado = {
+            nome: document.getElementById("nome").value,
+            categoria: document.getElementById("categoria").value,
+            validade: document.getElementById("validade").value,
+            quantidade: parseInt(document.getElementById("quantidade").value),
+            preco: parseFloat(document.getElementById("preco").value)
+        };
+
+        axios.put(`http://localhost:8080/produtos/${idProduto}`, produtoAtualizado, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(() => {
+                alert("Produto atualizado com sucesso!");
+                window.location.href = "ControleEstoque.html";
+            })
+            .catch(error => {
+                console.error("Erro ao atualizar produto:", error);
+                alert("Erro ao atualizar produto.");
+            });
+    });
+</script>
+
+</body>
+</html>

@@ -39,6 +39,7 @@
         <th>Validade</th>
         <th>Quantidade</th>
         <th>Preço (R$)</th>
+        <th>Ações</th>
       </tr>
       </thead>
       <tbody id="tabela-produtos">
@@ -79,6 +80,8 @@
             <td>${p.validade}</td>
             <td>${p.quantidade}</td>
             <td>R$ ${p.preco.toFixed(2)}</td>
+            <th><button class="btn btn-sm btn-warning me-2" onclick="editarProduto(${p.id})">Editar</button>
+            <button class="btn btn-sm btn-danger" onclick="excluirProduto(${p.id})">Excluir</button></th>
           </tr>
         `;
       });
@@ -88,6 +91,30 @@
       alert("Erro ao carregar estoque. Verifique se o backend está rodando.");
     });
   }
+
+  function excluirProduto(id) {
+    const confirmacao = confirm("Tem certeza que deseja excluir este produto?");
+    if (confirmacao) {
+      const token = localStorage.getItem("token");
+      axios.delete(`http://localhost:8080/produtos/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+              .then(() => {
+                alert("Produto excluído com sucesso!");
+                carregarEstoque(); // Atualiza a lista
+              })
+              .catch(error => {
+                console.error("Erro ao excluir produto:", error);
+                alert("Erro ao excluir produto.");
+              });
+    }
+  }
+
+  function editarProduto(id) {
+    window.location.href = `EditarProduto.html?id=${id}`;
+  }
+
+
 </script>
 </body>
 </html>
